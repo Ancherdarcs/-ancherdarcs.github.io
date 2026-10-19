@@ -9,11 +9,11 @@ praybuttons.forEach(function(button) {
     if (button.classList.contains("prayed")) {
       // Already prayed: undo it
         button.classList.remove("prayed");
-        button.textContent = "Praying for you";
+        button.textContent = "🙏Praying for you";
     } else {
         // Not yet prayed: mark it as prayed
         button.classList.add("prayed");
-        button.textContent = "Prayed for you";
+        button.textContent = "🙏Prayed for you";
     }
     });
     
