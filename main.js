@@ -135,3 +135,44 @@ shareButtons.forEach(function (shareButton) {
   });
 
 });
+
+// ---------- Comment boxes on the Arcs page ----------
+
+const commentForms = document.querySelectorAll(".comment-form");
+
+commentForms.forEach(function (form) {
+
+  const input = form.querySelector(".comment-input");
+  const commentsBox = form.closest(".comments");
+  const errorMessage = commentsBox.querySelector(".comment-error");
+  const commentList = commentsBox.querySelector(".comment-list");
+
+  form.addEventListener("submit", function (event) {
+
+    // Stop the browser from reloading the page (what forms do by default)
+    event.preventDefault();
+
+    // What did they type? .trim() removes extra spaces at the ends
+    const text = input.value.trim();
+
+    // Nothing typed? Show the message and stop here
+    if (text === "") {
+      errorMessage.classList.remove("hidden");
+      return;
+    }
+
+    // Create a new list item and put the comment in it
+    const newComment = document.createElement("li");
+    newComment.textContent = text;
+    commentList.appendChild(newComment);
+
+    // Empty the box, ready for the next comment
+    input.value = "";
+  });
+
+  // Hide the message as soon as they start typing
+  input.addEventListener("input", function () {
+    errorMessage.classList.add("hidden");
+  });
+
+});

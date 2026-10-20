@@ -472,3 +472,62 @@ header img {
   border-color: #c9a24a;
   color: #f3ece0;
 }
+/* Comments on the Arcs page */
+.comments {
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid #3a3128;
+  text-align: left;
+}
+
+.comment-list {
+  list-style: none;
+  margin: 0 0 12px;
+  padding: 0;
+}
+
+.comment-list li {
+  background-color: #1c1814;
+  border-radius: 8px;
+  color: #f3ece0;
+  font-size: 15px;
+  padding: 8px 12px;
+  margin-bottom: 8px;
+}
+
+.comment-form {
+  display: flex;
+  gap: 8px;
+}
+
+.comment-input {
+  flex: 1;
+  min-width: 0;
+  background-color: #1c1814;
+  border: 1px solid #3a3128;
+  border-radius: 999px;
+  color: #f3ece0;
+  font-size: 16px;
+  padding: 8px 14px;
+}
+
+.comment-input:focus {
+  outline: none;
+  border-color: #c9a24a;
+}
+
+.comment-form button {
+  background-color: #c9a24a;
+  border: none;
+  border-radius: 999px;
+  color: #1c1814;
+  font-size: 14px;
+  padding: 8px 16px;
+  cursor: pointer;
+}
+
+.comment-error {
+  color: #e8a598;
+  font-size: 13px;
+  margin: 6px 0 0;
+}
