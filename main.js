@@ -48,26 +48,90 @@ filterButtons.forEach(function (filterButton) {
 
   });
 });
-// ---------- Phone menu (every page) ----------
+// ---------- Phone menu: slide-out drawer (every page) ----------
 
 const menuToggle = document.querySelector(".menu-toggle");
 const siteNav = document.querySelector("#site-nav");
 
+// Our own reusable instructions: one to open, one to close
+function openMenu() {
+  siteNav.classList.add("open");
+  document.body.classList.add("menu-open");
+  menuToggle.textContent = "✕";
+  menuToggle.setAttribute("aria-expanded", "true");
+  menuToggle.setAttribute("aria-label", "Close menu");
+}
+
+function closeMenu() {
+  siteNav.classList.remove("open");
+  document.body.classList.remove("menu-open");
+  menuToggle.textContent = "☰";
+  menuToggle.setAttribute("aria-expanded", "false");
+  menuToggle.setAttribute("aria-label", "Open menu");
+}
+
 if (menuToggle) {
 
+  // Tap ☰ to open, tap ✕ to close
   menuToggle.addEventListener("click", function () {
-
-    // Open the menu if it's closed, close it if it's open
-    siteNav.classList.toggle("open");
-
     if (siteNav.classList.contains("open")) {
-      menuToggle.textContent = "✕ Close";
-      menuToggle.setAttribute("aria-expanded", "true");
+      closeMenu();
     } else {
-      menuToggle.textContent = "☰ Menu";
-      menuToggle.setAttribute("aria-expanded", "false");
+      openMenu();
+    }
+  });
+
+  // Tapping any link in the drawer closes it
+  siteNav.querySelectorAll("a").forEach(function (link) {
+    link.addEventListener("click", closeMenu);
+  });
+
+  // Tapping the dimmed page outside the drawer closes it
+  document.addEventListener("click", function (event) {
+    const tappedMenu = siteNav.contains(event.target);
+    const tappedButton = menuToggle.contains(event.target);
+
+    if (siteNav.classList.contains("open") && !tappedMenu && !tappedButton) {
+      closeMenu();
+    }
+  });
+
+}
+// ---------- Share buttons on the Arcs page ----------
+
+const shareButtons = document.querySelectorAll(".share");
+
+shareButtons.forEach(function (shareButton) {
+
+  shareButton.addEventListener("click", function () {
+
+    // Find the story this button belongs to
+    const story = shareButton.closest("article");
+    const title = story.querySelector("h3").textContent;
+
+    // Build a link straight to that story, e.g. .../arcs.html#arc-grief
+    const link = window.location.origin + window.location.pathname + "#" + story.id;
+
+    if (navigator.share) {
+      // Phones: open the built-in share menu
+      navigator.share({
+        title: title,
+        text: "Read this arc on Ancherd Arcs",
+        url: link
+      }).catch(function () {
+        // They closed the share menu without sharing. That's fine, do nothing.
+      });
+    } else {
+      // Computers without a share menu: copy the link instead
+      navigator.clipboard.writeText(link);
+      shareButton.textContent = "✓ Link copied";
+
+      // After 2 seconds, change the words back
+      setTimeout(function () {
+        shareButton.textContent = "↗ Share";
+      }, 2000);
     }
 
   });
 
-}
+});
