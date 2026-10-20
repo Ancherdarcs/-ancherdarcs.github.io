@@ -353,3 +353,57 @@ nav a:hover {
 .hidden {
   display: none;
 }
+/* Phone menu button: hidden on big screens */
+.menu-toggle {
+  display: none;
+  background: none;
+  border: 1px solid #c9a24a;
+  border-radius: 999px;
+  color: #f3ece0;
+  font-size: 15px;
+  padding: 8px 18px;
+  margin-top: 16px;
+  cursor: pointer;
+}
+
+/* Everything below only applies on screens 700px wide or smaller */
+@media (max-width: 700px) {
+
+  .menu-toggle {
+    display: inline-block;
+  }
+
+  #site-nav {
+    display: none;
+  }
+
+  #site-nav.open {
+    display: block;
+  }
+
+  #site-nav a {
+    display: block;
+    margin: 0;
+    padding: 10px 0;
+  }
+
+  /* Show the Collection categories as a simple list on phones */
+  .dropdown {
+    display: block;
+  }
+
+  .dropdown-menu {
+    display: block;
+    position: static;
+    transform: none;
+    background: none;
+    min-width: 0;
+    padding: 0;
+  }
+
+  .dropdown-menu a {
+    font-size: 14px;
+    color: #b8ad9c;
+    padding: 6px 0;
+  }
+}

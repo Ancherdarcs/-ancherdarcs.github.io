@@ -48,3 +48,26 @@ filterButtons.forEach(function (filterButton) {
 
   });
 });
+// ---------- Phone menu (every page) ----------
+
+const menuToggle = document.querySelector(".menu-toggle");
+const siteNav = document.querySelector("#site-nav");
+
+if (menuToggle) {
+
+  menuToggle.addEventListener("click", function () {
+
+    // Open the menu if it's closed, close it if it's open
+    siteNav.classList.toggle("open");
+
+    if (siteNav.classList.contains("open")) {
+      menuToggle.textContent = "✕ Close";
+      menuToggle.setAttribute("aria-expanded", "true");
+    } else {
+      menuToggle.textContent = "☰ Menu";
+      menuToggle.setAttribute("aria-expanded", "false");
+    }
+
+  });
+
+}
