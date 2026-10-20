@@ -176,3 +176,44 @@ commentForms.forEach(function (form) {
   });
 
 });
+// ---------- Database: load saved comments (Arcs page) ----------
+
+const SUPABASE_URL = "https://qbehfkxbncxkkwyihpqh.supabase.co";
+const SUPABASE_KEY = "sb_publishable_Lg0Y1qhgdlNd8WtCm04PwA_PJUKqI7_";
+
+// Only connect on pages that loaded the Supabase library
+let db = null;
+if (window.supabase) {
+  db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+}
+
+async function loadComments() {
+  if (!db) {
+    return;
+  }
+
+  // Ask the database for every approved comment, oldest first
+  const { data, error } = await db
+    .from("comments")
+    .select("arc_id, body")
+    .order("created_at");
+
+  if (error) {
+    console.error("Couldn't load comments:", error.message);
+    return;
+  }
+
+  // Put each comment under the story it belongs to
+  data.forEach(function (comment) {
+    const story = document.getElementById(comment.arc_id);
+    if (!story) {
+      return;
+    }
+
+    const item = document.createElement("li");
+    item.textContent = comment.body;
+    story.querySelector(".comment-list").appendChild(item);
+  });
+}
+
+loadComments();
