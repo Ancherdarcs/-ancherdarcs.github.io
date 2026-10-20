@@ -407,3 +407,10 @@ nav a:hover {
     padding: 6px 0;
   }
 }
+/* Logo sits on its own line and never overflows a phone screen */
+header img {
+  display: block;
+  margin: 0 auto;
+  max-width: 100%;
+  height: auto;
+}
