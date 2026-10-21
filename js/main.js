@@ -144,7 +144,9 @@ commentForms.forEach(function (form) {
 
   const input = form.querySelector(".comment-input");
   const postButton = form.querySelector("button");
-  const message = form.closest(".comments").querySelector(".comment-error");
+  const commentsBox = form.closest(".comments");
+  const message = commentsBox.querySelector(".comment-error");
+  const anonymousBox = commentsBox.querySelector(".comment-anon");
 
   // Show a message under the box: red for problems, gold for success
   function showMessage(text, isError) {
@@ -170,17 +172,26 @@ commentForms.forEach(function (form) {
       return;
     }
 
-    // Which story is this comment for? e.g. "arc-grief"
+    // Only signed-in people can post
+    const sessionResult = await db.auth.getSession();
+
+    if (!sessionResult.data.session) {
+      showMessage("Please sign in to comment. Use the Sign in link at the top of this page.", true);
+      return;
+    }
+
+    // Which story is this for, and did they tick "Post anonymously"?
     const arcId = form.closest("article").id;
+    const postAnonymously = anonymousBox ? anonymousBox.checked : false;
 
     // Stop double-taps while we wait for the database
     postButton.disabled = true;
     postButton.textContent = "Posting…";
 
-    // Save it. It's stored as "not approved" until you approve it
+    // Save it. The database adds their name (or "Anonymous") by itself
     const { error } = await db
       .from("comments")
-      .insert({ arc_id: arcId, body: text });
+      .insert({ arc_id: arcId, body: text, anonymous: postAnonymously });
 
     postButton.disabled = false;
     postButton.textContent = "Post";
@@ -242,3 +253,82 @@ async function loadComments() {
 }
 
 loadComments();
+async function loadComments() {
+  if (!db) {
+    return;
+  }
+
+  // Ask the database for every approved comment, oldest first
+  const { data, error } = await db
+    .from("comments")
+    .select("arc_id, body, author_name")
+    .order("created_at");
+
+  if (error) {
+    console.error("Couldn't load comments:", error.message);
+    return;
+  }
+
+  // Put each comment under the story it belongs to
+  data.forEach(function (comment) {
+    const story = document.getElementById(comment.arc_id);
+    if (!story) {
+      return;
+    }
+
+    // The name, in gold
+    const name = document.createElement("span");
+    name.className = "comment-author";
+    name.textContent = comment.author_name || "Member";
+
+    // The comment itself
+    const words = document.createElement("p");
+    words.className = "comment-body";
+    words.textContent = comment.body;
+
+    const item = document.createElement("li");
+    item.appendChild(name);
+    item.appendChild(words);
+    story.querySelector(".comment-list").appendChild(item);
+  });
+}
+
+// Show "Signed in as ___" at the top of the Arcs page
+async function showAccountStatus() {
+  const status = document.getElementById("account-status");
+
+  if (!status || !db) {
+    return;
+  }
+
+  const sessionResult = await db.auth.getSession();
+  const session = sessionResult.data.session;
+
+  // Not signed in: leave the "Sign in to comment" link as it is
+  if (!session) {
+    return;
+  }
+
+  const profileResult = await db
+    .from("profiles")
+    .select("display_name")
+    .eq("id", session.user.id)
+    .maybeSingle();
+
+  const profile = profileResult.data;
+  const link = document.createElement("a");
+  link.href = "account.html";
+
+  if (profile) {
+    status.textContent = "Signed in as " + profile.display_name + " · ";
+    link.textContent = "Account";
+  } else {
+    status.textContent = "You're signed in. ";
+    link.textContent = "Choose your display name";
+  }
+
+  status.appendChild(link);
+}
+
+loadComments();
+showAccountStatus();
