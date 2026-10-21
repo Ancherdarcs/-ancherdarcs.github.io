@@ -592,3 +592,36 @@ header img {
   text-decoration: underline;
   cursor: pointer;
 }
+/* Names on comments, the anonymous option, and sign-in status */
+.comment-author {
+  display: block;
+  color: #c9a24a;
+  font-size: 13px;
+  margin-bottom: 2px;
+}
+
+.comment-body {
+  margin: 0;
+  color: #f3ece0;
+}
+
+.anon-option {
+  display: inline-block;
+  margin-top: 8px;
+  color: #b8ad9c;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.anon-option input {
+  margin-right: 6px;
+  accent-color: #c9a24a;
+}
+
+.account-status {
+  font-size: 14px;
+}
+
+.account-status a {
+  color: #c9a24a;
+}
