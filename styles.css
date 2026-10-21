@@ -531,3 +531,64 @@ header img {
   font-size: 13px;
   margin: 6px 0 0;
 }
+/* The "thanks, it's being reviewed" message */
+.comment-error.is-success {
+  color: #c9a24a;
+}
+/* Account page */
+.account-card {
+  background-color: #262019;
+  max-width: 480px;
+  margin: 32px auto;
+  padding: 24px;
+  border-radius: 12px;
+}
+
+.account-card h2 {
+  margin-top: 0;
+}
+
+.account-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.account-input {
+  background-color: #1c1814;
+  border: 1px solid #3a3128;
+  border-radius: 8px;
+  color: #f3ece0;
+  font-size: 16px;
+  padding: 12px 14px;
+}
+
+.account-input:focus {
+  outline: none;
+  border-color: #c9a24a;
+}
+
+.account-form .button {
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.account-message {
+  color: #c9a24a;
+  font-size: 14px;
+}
+
+.account-message.is-error {
+  color: #e8a598;
+}
+
+.link-button {
+  background: none;
+  border: none;
+  color: #b8ad9c;
+  font-size: 14px;
+  text-decoration: underline;
+  cursor: pointer;
+}

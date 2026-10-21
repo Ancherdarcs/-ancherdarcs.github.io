@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your account | Ancherd Arcs</title>
+    <link rel="stylesheet" href="css/styles.css">
+  </head>
+  <body>
+
+    <header>
+      <img src="images/logo.png" alt="Ancherd Arcs logo" width="150">
+         <button class="menu-toggle" type="button"   aria-expanded="false" aria-label="Open menu">☰</button><nav id="site-nav">
+        <a href="index.html">Home</a>
+        <a href="arcs.html">Arcs</a>
+        <div class="dropdown">
+          <a href="collection.html">Collection ▾</a>
+          <div class="dropdown-menu">
+            <a href="collection.html#aa">Ancherd Arcs</a>
+            <a href="collection.html#shirts">Shirts</a>
+            <a href="collection.html#pants">Pants</a>
+            <a href="collection.html#accessories">Accessories</a>
+            <a href="collection.html#parables">The Parables</a>
+          </div>
+        </div>
+        <a href="resources.html">Resources</a>
+      </nav>
+    </header>
+
+    <main>
+      <h1>Your account</h1>
+
+      <!-- Card 1: signed out -->
+      <section class="account-card" id="signed-out">
+        <h2>Sign in</h2>
+        <p>Enter your email and we'll send you a sign-in link. No password needed.</p>
+        <form class="account-form" id="email-form">
+          <input class="account-input" id="email-input" type="email" autocomplete="email" placeholder="you@example.com" aria-label="Email address" required>
+          <button class="button" type="submit">Send me a link</button>
+        </form>
+        <p class="account-message hidden" id="email-message"></p>
+      </section>
+
+      <!-- Card 2: signed in, but hasn't chosen a name yet -->
+      <section class="account-card hidden" id="choose-name">
+        <h2>What should we call you?</h2>
+        <p>This name shows on your comments. You can still post anonymously anytime.</p>
+        <form class="account-form" id="name-form">
+          <input class="account-input" id="name-input" type="text" maxlength="40" placeholder="First name or nickname" aria-label="Your name" required>
+          <button class="button" type="submit">Save my name</button>
+        </form>
+        <p class="account-message hidden" id="name-message"></p>
+      </section>
+
+      <!-- Card 3: all set -->
+      <section class="account-card hidden" id="signed-in">
+        <h2>Welcome, <span id="welcome-name"></span></h2>
+        <p>You're signed in. Head to Arcs and encourage someone today.</p>
+        <a class="button" href="arcs.html">Go to Arcs</a>
+        <p><button class="link-button" id="sign-out" type="button">Sign out</button></p>
+      </section>
+    </main>
+
+    <footer>
+      <p>As far as the east is from the west, so far has He removed our transgressions. Psalm 103:12</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.112.4"></script>
+    <script src="js/main.js"></script>
+    <script src="js/account.js"></script>
+  </body>
+</html>
