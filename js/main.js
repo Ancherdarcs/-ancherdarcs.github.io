@@ -97,3 +97,148 @@ if (menuToggle) {
   });
 
 }
+// ---------- Share buttons on the Arcs page ----------
+
+const shareButtons = document.querySelectorAll(".share");
+
+shareButtons.forEach(function (shareButton) {
+
+  shareButton.addEventListener("click", function () {
+
+    // Find the story this button belongs to
+    const story = shareButton.closest("article");
+    const title = story.querySelector("h3").textContent;
+
+    // Build a link straight to that story, e.g. .../arcs.html#arc-grief
+    const link = window.location.origin + window.location.pathname + "#" + story.id;
+
+    if (navigator.share) {
+      // Phones: open the built-in share menu
+      navigator.share({
+        title: title,
+        text: "Read this arc on Ancherd Arcs",
+        url: link
+      }).catch(function () {
+        // They closed the share menu without sharing. That's fine, do nothing.
+      });
+    } else {
+      // Computers without a share menu: copy the link instead
+      navigator.clipboard.writeText(link);
+      shareButton.textContent = "✓ Link copied";
+
+      // After 2 seconds, change the words back
+      setTimeout(function () {
+        shareButton.textContent = "↗ Share";
+      }, 2000);
+    }
+
+  });
+
+});
+
+// ---------- Comment boxes on the Arcs page ----------
+
+const commentForms = document.querySelectorAll(".comment-form");
+
+commentForms.forEach(function (form) {
+
+  const input = form.querySelector(".comment-input");
+  const postButton = form.querySelector("button");
+  const message = form.closest(".comments").querySelector(".comment-error");
+
+  // Show a message under the box: red for problems, gold for success
+  function showMessage(text, isError) {
+    message.textContent = text;
+    message.classList.remove("hidden");
+    message.classList.toggle("is-success", !isError);
+  }
+
+  form.addEventListener("submit", async function (event) {
+
+    // Stop the page from reloading
+    event.preventDefault();
+
+    const text = input.value.trim();
+
+    if (text === "") {
+      showMessage("Write something before posting.", true);
+      return;
+    }
+
+    if (!db) {
+      showMessage("Comments aren't connected right now. Please try again later.", true);
+      return;
+    }
+
+    // Which story is this comment for? e.g. "arc-grief"
+    const arcId = form.closest("article").id;
+
+    // Stop double-taps while we wait for the database
+    postButton.disabled = true;
+    postButton.textContent = "Posting…";
+
+    // Save it. It's stored as "not approved" until you approve it
+    const { error } = await db
+      .from("comments")
+      .insert({ arc_id: arcId, body: text });
+
+    postButton.disabled = false;
+    postButton.textContent = "Post";
+
+    if (error) {
+      console.error("Couldn't post comment:", error.message);
+      showMessage("Something went wrong. Please try again.", true);
+      return;
+    }
+
+    input.value = "";
+    showMessage("Thanks! Your comment will appear once it's reviewed.", false);
+  });
+
+  // Hide the message as soon as they start typing again
+  input.addEventListener("input", function () {
+    message.classList.add("hidden");
+  });
+
+});
+// ---------- Database: load saved comments (Arcs page) ----------
+
+const SUPABASE_URL = "https://qbehfkxbncxkkwyihpqh.supabase.co";
+const SUPABASE_KEY = "sb_publishable_Lg0Y1qhgdlNd8WtCm04PwA_PJUKqI7_";
+
+// Only connect on pages that loaded the Supabase library
+let db = null;
+if (window.supabase) {
+  db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+}
+
+async function loadComments() {
+  if (!db) {
+    return;
+  }
+
+  // Ask the database for every approved comment, oldest first
+  const { data, error } = await db
+    .from("comments")
+    .select("arc_id, body")
+    .order("created_at");
+
+  if (error) {
+    console.error("Couldn't load comments:", error.message);
+    return;
+  }
+
+  // Put each comment under the story it belongs to
+  data.forEach(function (comment) {
+    const story = document.getElementById(comment.arc_id);
+    if (!story) {
+      return;
+    }
+
+    const item = document.createElement("li");
+    item.textContent = comment.body;
+    story.querySelector(".comment-list").appendChild(item);
+  });
+}
+
+loadComments();
